@@ -1,0 +1,8 @@
+version: '3'
+services:
+  core:
+    image: dhis2/core:2.30-latest
+    build: 
+      context: ./containers/core
+      args:
+        - VERSION=2.30
