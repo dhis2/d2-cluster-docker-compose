@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-waitTime=5
+waitTime=10
 dbContainer=db
 dbName=dhis2
 dbUser=dhis

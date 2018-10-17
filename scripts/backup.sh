@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-waitTime=5
+waitTime=10
 dbContainer=db
 dbName=dhis2
 dbUser=dhis
@@ -38,9 +38,11 @@ if [ ${file: -7} == ".sql.gz" ]
     echo "Backing up to '$file'..."
     if [ "$2" == "full" ]
       then
-        docker-compose exec -e PGPASSWORD=$dbPass -T $dbContainer pg_dump --clean --if-exists -h $dbContainer --dbname $dbName --username $dbUser | gzip -c > $file
+        echo "Creating full backup, including analytics tables..."
+        docker-compose exec -e PGPASSWORD=$dbPass -T $dbContainer pg_dump -h $dbContainer --dbname $dbName --username $dbUser | gzip -c > $file
       else # Exclude analytics and resource tables
-        docker-compose exec -e PGPASSWORD=$dbPass -T $dbContainer pg_dump --clean --if-exists -T analytics* -T _* -h $dbContainer --dbname $dbName --username $dbUser | gzip -c > $file
+        echo "Creating lean backup..."
+        docker-compose exec -e PGPASSWORD=$dbPass -T $dbContainer pg_dump -T analytics* -T _* -h $dbContainer --dbname $dbName --username $dbUser | gzip -c > $file
     fi
     
     if [ $started -eq 1 ]
