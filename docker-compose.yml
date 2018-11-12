@@ -1,7 +1,7 @@
 version: '3'
 services:
   core:
-    image: "amcgee/dhis2-core:dev"
+    image: "amcgee/dhis2-core:${DHIS2_CORE_TAG}"
     restart: always
     volumes:
       - ./config/DHIS2_home:/DHIS2_home
@@ -10,8 +10,6 @@ services:
   db:
     image: "mdillon/postgis:10-alpine"
     restart: always
-    ports:
-      - "5432:5432"
     volumes:
       - datadb:/var/lib/postgresql/data
     environment:
@@ -20,8 +18,9 @@ services:
       POSTGRES_PASSWORD: dhis
   gateway:
     image: "nginx:alpine"
+    restart: always
     ports:
-      - "8080:80"
+      - "${DHIS2_CORE_PORT}:80"
     volumes:
       - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.apps:/data/apps:ro

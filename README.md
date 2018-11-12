@@ -4,7 +4,7 @@
 
 * [Docker Desktop](https://www.docker.com/products/docker-desktop) (Mac or Windows) or [Docker Engine](https://docs.docker.com/install/#supported-platforms) on Linux
 * [Docker Compose](https://docs.docker.com/compose/install/) (included with **Docker Desktop** on Mac and Windows)
-* A DHIS2 database `.sql` or `.sql.gz` file 
+* A DHIS2 database `.sql` or `.sql.gz` file compatible with the version of DHIS2 you will be installing
 
 ## Setup
 
@@ -41,6 +41,20 @@ Or destroy the database data (which is stored in a Docker-managed [volume](https
 > ./scripts/clean.sh
 ```
 
+## Advanced Usgae
+
+By default, `start.sh` will pull the image [amcgee/dhis2-core:dev-alpine](https://hub.docker.com/r/amcgee/dhis2-core/tags/) from Docker Hub.  You can specify a custom image tage (though not a custom image at this time) with the environment variable `DHIS2_CORE_TAG`, for example:
+
+```sh
+> DHIS2_CORE_TAG=2.31-rc1 ./scripts/start.sh
+```
+
+By default, `start.sh` will expose the DHIS2 Core instance at port 8080.  This can be customized with the environment variable `DHIS2_CORE_PORT`, for example:
+
+```sh
+> DHIS2_CORE_PORT=8888 ./scripts/start.sh
+```
+
 ## Configuration and Logs
 
 The `DHIS2_home` directory on the `core` container is mapped to the directory `./config/DHIS2_home`, so you can put configuration there as well as view DHIS2 system logs.  This directory is **NOT** deleted when running `clean.sh`.  The `dhis.conf` file is required to exist and by default has the following contents (note the database connection parameters):
@@ -63,4 +77,3 @@ metadata.audit.persist = on
 Once the container is running:
 
 * Your DHIS2 instance will be accessible at [localhost:8080](http://localhost:8080/)
-* You can access the postgres instance directly, if you want, at [localhost:5432](http://localhost:5432)
