@@ -55,6 +55,12 @@ By default, `start.sh` will expose the DHIS2 Core instance at port 8080.  This c
 > DHIS2_CORE_PORT=8888 ./scripts/start.sh
 ```
 
+These environment variables can also be specified int the `.env` file
+
+### Multiple backend instances
+
+It is possible to run multiple instances of the DHIS2 backend cluster on the same machine.  Since `docker-compose` uses the name of the directory as the project namespace for a cluster, it is currently necessary to keep separate copies of the `dhis2-backend` repo with different directory names, such as `backend` and `backend-231rc1`.  With this setup and using the environment variables above to select a core version tag and specify non-conflicting ports it is possibel to run multiple versions of the backend simultaneously.
+
 ## Configuration and Logs
 
 The `DHIS2_home` directory on the `core` container is mapped to the directory `./config/DHIS2_home`, so you can put configuration there as well as view DHIS2 system logs.  This directory is **NOT** deleted when running `clean.sh`.  The `dhis.conf` file is required to exist and by default has the following contents (note the database connection parameters):
