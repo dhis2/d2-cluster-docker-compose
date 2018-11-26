@@ -4,7 +4,7 @@
 
 * [Docker Desktop](https://www.docker.com/products/docker-desktop) (Mac or Windows) or [Docker Engine](https://docs.docker.com/install/#supported-platforms) on Linux
 * [Docker Compose](https://docs.docker.com/compose/install/) (included with **Docker Desktop** on Mac and Windows)
-* (OPTIONAL) A DHIS2 database `.sql` or `.sql.gz` dump compatible with the version of DHIS2 you will be installing
+* **OPTIONAL** A DHIS2 database `.sql` or `.sql.gz` dump compatible with the version of DHIS2 you will be installing (such as the [Sierra Leone demo db](https://github.com/dhis2/dhis2-demo-db/tree/master/sierra-leone))
 
 ## Setup
 
