@@ -35,7 +35,7 @@ You can stop the services manually:
 > ./scripts/stop.sh
 ```
 
-Or destroy the database data (which is stored in a Docker-managed [volume](https://docs.docker.com/storage/volumes/) on the host system):
+Or destroy the Docker images and all database data (which is stored in a Docker-managed [volume](https://docs.docker.com/storage/volumes/) on the host system):
 
 ```bash
 > ./scripts/clean.sh
@@ -43,7 +43,7 @@ Or destroy the database data (which is stored in a Docker-managed [volume](https
 
 ## Advanced Usgae
 
-By default, `start.sh` will pull the image [amcgee/dhis2-core:dev-alpine](https://hub.docker.com/r/amcgee/dhis2-core/tags/) from Docker Hub.  You can specify a custom image tage (though not a custom image at this time) with the environment variable `DHIS2_CORE_TAG`, for example:
+By default, `start.sh` will pull the image [amcgee/dhis2-core:dev-alpine](https://hub.docker.com/r/amcgee/dhis2-core/tags/) from Docker Hub.  You can specify a custom image tag (though not a custom image at this time) with the environment variable `DHIS2_CORE_TAG`, for example:
 
 ```sh
 > DHIS2_CORE_TAG=2.31-rc1 ./scripts/start.sh
