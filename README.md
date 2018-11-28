@@ -46,7 +46,7 @@ Or destroy the Docker images and all database data (which is stored in a Docker-
 By default, `start.sh` will pull the image [amcgee/dhis2-core:dev-alpine](https://hub.docker.com/r/amcgee/dhis2-core/tags/) from Docker Hub.  You can specify a custom image tag (though not a custom image at this time) with the environment variable `DHIS2_CORE_TAG`, for example:
 
 ```sh
-> DHIS2_CORE_TAG=2.31-rc1 ./scripts/start.sh
+> DHIS2_CORE_TAG=2.31-rc1-alpine ./scripts/start.sh
 ```
 
 By default, `start.sh` will expose the DHIS2 Core instance at port 8080.  This can be customized with the environment variable `DHIS2_CORE_PORT`, for example:
