@@ -8,10 +8,9 @@
 
 ## Setup
 
-First, build the containers for the DHIS2 Core instance and Postgres Database, then seed the database with some dummy data (**optional**):
+First, seed the database with some dummy data (**optional**):
 
 ```bash
-> ./scripts/build.sh clean
 > ./scripts/seed.sh <path/to/seedfile.sql.gz>
 ```
 
