@@ -17,12 +17,13 @@ services:
       POSTGRES_USER: dhis
       POSTGRES_PASSWORD: dhis
   gateway:
-    image: "nginx:alpine"
+    image: "jwilder/nginx-proxy:alpine"
     restart: always
     ports:
       - "${DHIS2_CORE_PORT}:80"
     volumes:
       - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.apps:/data/apps:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 volumes:
   datadb:
