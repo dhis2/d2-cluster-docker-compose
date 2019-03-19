@@ -9,6 +9,7 @@ services:
       - "db"
   db:
     image: "mdillon/postgis:10-alpine"
+    command: "postgres -c max_locks_per_transaction=100"
     restart: always
     volumes:
       - datadb:/var/lib/postgresql/data
