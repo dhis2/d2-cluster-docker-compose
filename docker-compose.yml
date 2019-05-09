@@ -5,7 +5,7 @@ services:
     restart: always
     volumes:
       - ./config/DHIS2_home:/DHIS2_home
-      - ./config/tomcat-server.xml:/usr/local/tomcat/conf/server.xml:ro
+      - ./config/tomcat-server-${DHIS2_CORE_TAG}.xml:/usr/local/tomcat/conf/server.xml:ro
     depends_on:
       - "db"
   db:
