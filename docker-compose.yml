@@ -5,9 +5,9 @@ services:
     restart: always
     volumes:
       - ./config/DHIS2_home:/DHIS2_home
-      - ./config/context.xml:/usr/local/tomcat/conf/Catalina/localhost/ROOT.xml:ro
+      - ./config/tomcat-server.xml:/usr/local/tomcat/conf/server.xml:ro
     environment:
-      DHIS2_CORE_CONTEXT: ${DHIS2_CORE_CONTEXT}
+      CATALINA_OPTS: "-Dcontext.path=${DHIS2_CORE_CONTEXT}"
     depends_on:
       - "db"
   db:

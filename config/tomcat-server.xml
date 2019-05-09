@@ -147,18 +147,11 @@
                resourceName="UserDatabase"/>
       </Realm>
 
-      <Host name="localhost"  appBase="webapps"
-            unpackWARs="true" autoDeploy="true">
+      <Host name="localhost"  appBase="webapps" deployOnStartup="false"
+            unpackWARs="true" autoDeploy="false">
 
-          <!-- Replace context path with configurable path to be able to
-               place dockerized backend behind an external reverse proxy
-               and get all the internal redirects working properly.
-
-               It will either be replaced with an empty string which will
-               have the default behaviour of setting the context to '/', or
-               to the context path provided to d2-cluster through the context
-               argument.  -->
-        <Context path="{REPLACE_WITH_CONTEXT}" docBase="ROOT/" />
+	<Context path="" docBase="ROOT/" />
+	<Context path="/${context.path}" docBase="ROOT/" />
 
         <!-- SingleSignOn valve, share authentication between web applications
              Documentation at: /docs/config/valve.html -->
