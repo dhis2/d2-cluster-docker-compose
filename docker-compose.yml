@@ -7,7 +7,7 @@ services:
       - ./config/DHIS2_home:/DHIS2_home
       - ./config/tomcat-server.xml:/usr/local/tomcat/conf/server.xml:ro
     environment:
-      CATALINA_OPTS: "-Dcontext.path=${DHIS2_CORE_CONTEXT}"
+      CATALINA_OPTS: "-Dcontext.path=${DHIS2_CORE_NAME}"
     depends_on:
       - "db"
   db:
