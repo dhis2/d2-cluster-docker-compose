@@ -1,7 +1,7 @@
 version: '3'
 services:
   core:
-    image: "amcgee/dhis2-core:${DHIS2_CORE_TAG}"
+    image: "dhis2/core:${DHIS2_CORE_TAG}"
     restart: always
     volumes:
       - ./config/DHIS2_home:/DHIS2_home
