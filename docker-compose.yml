@@ -1,10 +1,11 @@
 version: '3'
 services:
   core:
-    image: "dhis2/core:${DHIS2_CORE_TAG}"
+    image: "amcgee/dhis2-core:${DHIS2_CORE_TAG}"
     restart: always
     volumes:
       - ./config/DHIS2_home:/DHIS2_home
+      - ./config/server.xml:/usr/local/tomcat/conf/server.xml
     environment:
       CATALINA_OPTS: "-Dcontext.path=/${DHIS2_CORE_NAME}"
     depends_on:
