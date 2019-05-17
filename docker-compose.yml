@@ -1,7 +1,7 @@
 version: '3'
 services:
   core:
-    image: "${DHIS2_CORE_REPO}:${DHIS2_CORE_TAG}"
+    image: "${DHIS2_CORE_IMAGE}"
     restart: always
     volumes:
       - ./config/DHIS2_home:/DHIS2_home
