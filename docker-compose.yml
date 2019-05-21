@@ -6,6 +6,7 @@ services:
     volumes:
       - ./config/DHIS2_home/dhis.conf:/DHIS2_home/dhis.conf
       - ./config/server.xml:/usr/local/tomcat/conf/server.xml
+      - home:/DHIS2_home
     environment:
       CATALINA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}'"
     depends_on:
@@ -31,3 +32,4 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
 volumes:
   datadb:
+  home:
