@@ -1,10 +1,14 @@
 version: '3'
 services:
   core:
-    image: "amcgee/dhis2-core:${DHIS2_CORE_TAG}"
+    image: "${DHIS2_CORE_IMAGE}"
     restart: always
     volumes:
-      - ./config/DHIS2_home:/DHIS2_home
+      - ./config/DHIS2_home/dhis.conf:/DHIS2_home/dhis.conf
+      - ./config/server.xml:/usr/local/tomcat/conf/server.xml
+      - home:/DHIS2_home
+    environment:
+      CATALINA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}'"
     depends_on:
       - "db"
   db:
@@ -28,3 +32,4 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
 volumes:
   datadb:
+  home:
