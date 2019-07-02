@@ -7,6 +7,8 @@ dbName=dhis2
 dbUser=dhis
 dbPass=dhis
 
+[[ -z "$DOCKER_COMPOSE" ]] && DOCKER_COMPOSE="docker-compose"
+
 if [ $# -eq 0 ]
   then
     echo "USAGE: scripts/backup.sh <path/to/backupfile.sql.gz> [full]" 1>&2
@@ -23,11 +25,11 @@ fi
 started=0
 if [ ${file: -7} == ".sql.gz" ]
   then
-    upcount=`docker-compose ps db | grep Up | wc -l`
+    upcount=`$DOCKER_COMPOSE ps db | grep Up | wc -l`
     if [ $upcount -eq 0 ]
       then
         echo "Starting db container..."
-        docker-compose up -d db
+        $DOCKER_COMPOSE up -d db
         
         echo "Waiting $waitTime seconds for postgres initialization..."
         sleep $waitTime
@@ -39,16 +41,16 @@ if [ ${file: -7} == ".sql.gz" ]
     if [ "$2" == "full" ]
       then
         echo "Creating full backup, including analytics tables..."
-        docker-compose exec -e PGPASSWORD=$dbPass -T $dbContainer pg_dump -h $dbContainer --dbname $dbName --username $dbUser | gzip -c > $file
+        $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer pg_dump -h $dbContainer --dbname $dbName --username $dbUser | gzip -c > $file
       else # Exclude analytics and resource tables
         echo "Creating lean backup..."
-        docker-compose exec -e PGPASSWORD=$dbPass -T $dbContainer pg_dump -T analytics* -T _* -h $dbContainer --dbname $dbName --username $dbUser | gzip -c > $file
+        $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer pg_dump -T analytics* -T _* -h $dbContainer --dbname $dbName --username $dbUser | gzip -c > $file
     fi
     
     if [ $started -eq 1 ]
       then
         echo "Stopping db container..."
-        docker-compose stop db
+        $DOCKER_COMPOSE stop db
     fi
 
     exit 0
