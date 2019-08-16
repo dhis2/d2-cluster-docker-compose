@@ -23,28 +23,29 @@ if [ ! -f $file ]
 fi
 
 started=0
-if [ ${file: -4} == ".sql" ] || [ ${file: -7} == ".sql.gz" ]
+if [ ${file: -5} == ".dump" ] || ${file: -4} == ".sql" ] || [ ${file: -7} == ".sql.gz" ]
   then
     upcount=`$DOCKER_COMPOSE ps db | grep Up | wc -l`
     if [ $upcount -eq 0 ]
       then
         echo "Starting db container..."
         $DOCKER_COMPOSE up -d db
-        
+
         echo "Waiting $waitTime seconds for postgres initialization..."
         sleep $waitTime
 
         started=1
     fi
-    
+
     echo "Importing '$file'..."
-    if [ ${file: -7} == ".sql.gz" ]
-      then
-        gunzip -c $file | $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer psql -h $dbContainer --dbname $dbName --username $dbUser
-      else
-        cat $file | $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer psql -h $dbContainer --dbname $dbName --username $dbUser
+    if [ ${file: -5} == ".dump" ] then
+      cat $file | $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer pg_restore -h $dbContainer --dbname $dbName --username $dbUser
+    elif [ ${file: -7} == ".sql.gz" ] then
+      gunzip -c $file | $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer psql -h $dbContainer --dbname $dbName --username $dbUser
+    else
+      cat $file | $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer psql -h $dbContainer --dbname $dbName --username $dbUser
     fi
-    
+
     if [ $started -eq 1 ]
       then
         echo "Stopping db container..."
