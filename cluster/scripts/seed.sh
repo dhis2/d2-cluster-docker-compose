@@ -23,7 +23,7 @@ if [ ! -f $file ]
 fi
 
 started=0
-if [ ${file: -5} == ".dump" ] || ${file: -4} == ".sql" ] || [ ${file: -7} == ".sql.gz" ]
+if [ ${file: -5} == ".dump" ] || [ ${file: -4} == ".sql" ] || [ ${file: -7} == ".sql.gz" ]
   then
     upcount=`$DOCKER_COMPOSE ps db | grep Up | wc -l`
     if [ $upcount -eq 0 ]
@@ -38,10 +38,12 @@ if [ ${file: -5} == ".dump" ] || ${file: -4} == ".sql" ] || [ ${file: -7} == ".s
     fi
 
     echo "Importing '$file'..."
-    if [ ${file: -5} == ".dump" ] then
-      cat $file | $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer pg_restore -h $dbContainer --dbname $dbName --username $dbUser
-    elif [ ${file: -7} == ".sql.gz" ] then
-      gunzip -c $file | $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer psql -h $dbContainer --dbname $dbName --username $dbUser
+    if [ ${file: -5} == ".dump" ]
+      then
+        cat $file | $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer pg_restore -h $dbContainer --dbname $dbName --username $dbUser
+    elif [ ${file: -7} == ".sql.gz" ]
+      then
+        gunzip -c $file | $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer psql -h $dbContainer --dbname $dbName --username $dbUser
     else
       cat $file | $DOCKER_COMPOSE exec -e PGPASSWORD=$dbPass -T $dbContainer psql -h $dbContainer --dbname $dbName --username $dbUser
     fi
