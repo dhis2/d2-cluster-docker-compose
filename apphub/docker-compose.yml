@@ -1,0 +1,21 @@
+version: '3'
+services:
+  core:
+    image: "${DHIS2_APPHUB_IMAGE}"
+    restart: unless-stopped
+    ports:
+      - "${DHIS2_APPHUB_PORT}:3000"
+    depends_on:
+      - "db"
+    links: 
+      - db
+    env_file: .apphub.env
+  db:
+    image: "ntboes/postgres-uuid"
+    restart: unless-stopped
+    environment:
+       POSTGRES_DB: apphub
+       POSTGRES_USER: apphub
+       POSTGRES_PASSWORD: apphub
+
+
