@@ -25,7 +25,7 @@ You can stop the services manually, this will also destroy the database as this 
 To seed the database on an existing cluster:
 
 ```bash
-> ./scripts/reset-db.sh
+> ./scripts/seed.sh
 ```
 
 To reset the database on an existing cluster:
