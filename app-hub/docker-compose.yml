@@ -14,8 +14,7 @@ services:
     image: "ntboes/postgres-uuid"
     restart: unless-stopped
     environment:
-       POSTGRES_DB: apphub
-       POSTGRES_USER: apphub
-       POSTGRES_PASSWORD: apphub
-
+       POSTGRES_DB: app-hub
+       POSTGRES_USER: app-hub
+       POSTGRES_PASSWORD: app-hub
 
