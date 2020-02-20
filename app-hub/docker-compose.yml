@@ -11,7 +11,7 @@ services:
       - db
     env_file: .apphub.env
   db:
-    image: "ntboes/postgres-uuid"
+    build: ./postgres-uuid
     restart: unless-stopped
     environment:
        POSTGRES_DB: app-hub
