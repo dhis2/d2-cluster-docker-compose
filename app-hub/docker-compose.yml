@@ -11,7 +11,7 @@ services:
       - db
     env_file: .apphub.env
   db:
-    build: ./postgres-uuid
+    image: dhis2/postgres-contrib
     restart: unless-stopped
     environment:
        POSTGRES_DB: app-hub
