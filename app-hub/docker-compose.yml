@@ -5,11 +5,11 @@ services:
     restart: unless-stopped
     ports:
       - "${DHIS2_APPHUB_PORT}:3000"
-    depends_on:
-      - "db"
-    links: 
-      - db
     env_file: .apphub.env
+    depends_on:
+      - db
+    links:
+      - db
   db:
     build: ./postgres-uuid
     restart: unless-stopped
