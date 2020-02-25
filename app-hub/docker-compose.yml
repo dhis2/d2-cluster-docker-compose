@@ -10,6 +10,8 @@ services:
     links: 
       - db
     env_file: .apphub.env
+    environment:
+      - RDS_DB_PORT=${DHIS2_APPHUB_DB_PORT}
   db:
     image: dhis2/postgres-contrib
     restart: unless-stopped
@@ -17,4 +19,5 @@ services:
        POSTGRES_DB: app-hub
        POSTGRES_USER: app-hub
        POSTGRES_PASSWORD: app-hub
+    command: -p ${DHIS2_APPHUB_DB_PORT}
 
