@@ -33,3 +33,12 @@ To reset the database on an existing cluster:
 ```bash
 > ./scripts/reset-db.sh
 ```
+
+
+## Advanced Usage
+
+To run the App Hub on a separate port, with a custom postgres database isolated for this, it is possible to specify different ports so they don't collide with your normal postgres and for example d2 cluster.
+
+```bash
+> DHIS2_APPHUB_PORT=8081 DHIS2_APPHUB_DB_PORT=5433 ./scripts/start-and-seed.sh
+```
