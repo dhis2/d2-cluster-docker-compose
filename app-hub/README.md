@@ -33,3 +33,11 @@ To reset the database on an existing cluster:
 ```bash
 > ./scripts/reset-db.sh
 ```
+
+## Advanced Usage
+
+To run the App Hub on a separate port than the default 8080, this is also possible. For example on port 8081:
+
+```bash
+> DHIS2_APPHUB_PORT=8081 ./scripts/start-and-seed.sh
+```
