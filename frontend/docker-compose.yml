@@ -1,0 +1,21 @@
+version: '3.6'
+
+services:
+  proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  cache-cleaner:
+    image: dhis2/cache-cleaner-app:standalone
+    environment:
+      VIRTUAL_HOST: cache-cleaner.127.0.0.1.nip.io
+      VIRTUAL_PORT: 8080
+
+  translations:
+    image: dhis2/translations-app:standalone
+    environment:
+      VIRTUAL_HOST: translations.127.0.0.1.nip.io
+      VIRTUAL_PORT: 8080
