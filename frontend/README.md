@@ -1,4 +1,4 @@
-# DHIS2 Dockerized Server
+# DHIS2 Dockerized Frontends
 
 ## Pre-requisites
 
