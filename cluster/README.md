@@ -24,7 +24,11 @@ Once the containers have been built and the database seeded you can start the cl
 > ./scripts/start.sh
 ```
 
-_(it may take a couple minutes for the Java server to initialize)_
+_It may take a couple minutes for the Java server to initialize_. You may check the logs by running:
+
+```bash
+> ./scripts/logs.sh
+```
 
 Once started, the services should automatically restart if Docker or the host machine are restarted.
 
