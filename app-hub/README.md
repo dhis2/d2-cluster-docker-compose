@@ -16,6 +16,12 @@ To start the PostgreSQL server and App Hub backend/frontend you can start everyt
 
 Once started, the services should automatically restart if Docker or the host machine are restarted.
 
+You may check the logs by running:
+
+```bash
+> ./scripts/logs.sh
+```
+
 You can stop the services manually, this will also destroy the database as this is currently not in a separate volume:
 
 ```bash

@@ -24,7 +24,11 @@ Once the containers have been built and the database seeded you can start the cl
 > ./scripts/start.sh
 ```
 
-_(it may take a couple minutes for the Java server to initialize)_
+_It may take a couple minutes for the Java server to initialize_. You may check the logs by running:
+
+```bash
+> ./scripts/logs.sh
+```
 
 Once started, the services should automatically restart if Docker or the host machine are restarted.
 
@@ -42,7 +46,7 @@ Or destroy the Docker images and all database data (which is stored in a Docker-
 
 ## Advanced Usage
 
-By default, `start.sh` will pull the image [amcgee/dhis2-core:dev-alpine](https://hub.docker.com/r/amcgee/dhis2-core/tags/) from Docker Hub.  You can specify a custom image tag (though not a custom image at this time) with the environment variable `DHIS2_CORE_TAG`, for example:
+By default, `start.sh` will pull the [dhis2/core](https://hub.docker.com/r/dhis2/core/tags) image specified in [.env](.env) from Docker Hub.  You can specify a custom image tag (though not a custom image at this time) with the environment variable `DHIS2_CORE_TAG`, for example:
 
 ```sh
 > DHIS2_CORE_TAG=2.31-rc1-alpine ./scripts/start.sh
