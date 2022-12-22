@@ -6,7 +6,6 @@ services:
     volumes:
       - ${DHIS2_CORE_CONFIG:-./config/DHIS2_home/dhis.conf}:${DHIS2_HOME:-/opt/dhis2}/dhis.conf:ro
       - ./config/server.xml:/usr/local/tomcat/conf/server.xml
-      - ./config/DHIS2_home:${DHIS2_HOME:-/opt/dhis2}
     environment:
       DHIS2_HOME: ${DHIS2_HOME:-/opt/dhis2}
       CATALINA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}'"
