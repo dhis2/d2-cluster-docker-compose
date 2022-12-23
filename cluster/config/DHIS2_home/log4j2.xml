@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="10">
+    <!-- Stream logs:
+            docker compose logs -f web
+         Stream logs of a particuar package only:
+            docker compose logs -f web | grep org.hisp.dhis.monitoring.metrics
+         Show timestamps:
+            docker compose logs -t -f web
+    -->
+    <Properties>
+        <Property name="layout">%-5level %c [%t] %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${layout}" />
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <!--
+            This config logs events
+
+            for Loggers in packages starting from "org.hips.dhis" below i.e. "org.hisp.security"
+            from level INFO to more severe (WARN, ERROR, ...)
+
+            any Logger without a config here will log from level WARN to more severe.
+
+            Adapt this config as you see fit.
+
+            Please check https://logging.apache.org/log4j/2.x/manual/configuration.html
+        -->
+        <Logger name="org.hisp.dhis" level="INFO" additivity="true"/>
+
+        <Root level="WARN">
+            <AppenderRef ref="console"/>
+        </Root>
+    </Loggers>
+</Configuration>
