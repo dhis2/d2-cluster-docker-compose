@@ -7,6 +7,7 @@ services:
       - ${DHIS2_CORE_CONFIG:-./config/DHIS2_home/dhis.conf}:${DHIS2_HOME:-/DHIS2_home}/dhis.conf
       - ./config/DHIS2_home/log4j2.xml:/opt/dhis2/log4j2.xml
       - ./config/server.xml:/usr/local/tomcat/conf/server.xml
+      - home:${DHIS2_HOME:-/DHIS2_home}
     environment:
       DHIS2_HOME: ${DHIS2_HOME:-/DHIS2_home}
       CATALINA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}' \
