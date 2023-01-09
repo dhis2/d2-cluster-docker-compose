@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" monitorInterval="10">
     <!-- Stream logs:
-            docker compose logs -f web
+            docker compose logs -f core
          Stream logs of a particuar package only:
-            docker compose logs -f web | grep org.hisp.dhis.monitoring.metrics
+            docker compose logs -f core | grep org.hisp.dhis.monitoring.metrics
          Show timestamps:
-            docker compose logs -t -f web
+            docker compose logs -t -f core
     -->
     <Properties>
         <Property name="layout">%-5level %c [%t] %msg%n</Property>
