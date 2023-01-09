@@ -5,12 +5,12 @@ services:
     restart: always
     volumes:
       - ${DHIS2_CORE_CONFIG:-./config/DHIS2_home/dhis.conf}:${DHIS2_HOME:-/DHIS2_home}/dhis.conf
-      - ./config/DHIS2_home/log4j2.xml:/opt/dhis2/log4j2.xml
+      - ./config/DHIS2_home/log4j2.xml:${DHIS2_HOME:-/DHIS2_home}/log4j2.xml
       - ./config/server.xml:/usr/local/tomcat/conf/server.xml
     environment:
       DHIS2_HOME: ${DHIS2_HOME:-/DHIS2_home}
       CATALINA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}' \
-              -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml"
+              -Dlog4j2.configurationFile=${DHIS2_HOME:-/DHIS2_home}/log4j2.xml"
     depends_on:
       - "db"
   db:
