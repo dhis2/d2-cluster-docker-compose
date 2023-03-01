@@ -13,8 +13,6 @@ services:
     depends_on:
       - "db"
       - "redis"
-    ports:
-      - "8088:8080"
     scale: 3
   db:
     image: "ghcr.io/baosystems/postgis:12-3.3"
