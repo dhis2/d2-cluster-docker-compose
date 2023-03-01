@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack://src/index.css"],"names":[],"mappings":"AAKA,mCAEI,iBACJ","file":"main.20d3ce1f.chunk.css","sourcesContent":["#dhis2-app-root {\n    /* establish a stacking context for the application */\n    isolation: isolate;\n}\n\n#dhis2-portal-root {\n    /* establish a stacking context for portals */\n    isolation: isolate;\n}\n"]}
