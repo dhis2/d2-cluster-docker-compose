@@ -29,7 +29,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    scale: 2  # or more for a larger cluster
+    scale: 1  # or more for a larger cluster
 
   db:
     image: ${DHIS2_POSTGRESQL_IMAGE:-ghcr.io/baosystems/postgis:13-3.3}
@@ -105,7 +105,8 @@ services:
     profiles:
       - "replica"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   nginx:
     image: ${DHIS2_NGINX_IMAGE:-jwilder/nginx-proxy:alpine}
