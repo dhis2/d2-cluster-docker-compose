@@ -1,0 +1,127 @@
+version: "3.9"
+
+services:
+
+  redis:
+    image: ${DHIS2_REDIS_IMAGE:-redis:7.0.12-alpine}
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./docker/redis:/usr/local/etc/redis
+    ports:
+       - "6379"
+
+
+  web:
+    image: "${DHIS2_IMAGE:-dhis2/core:2.40.0:local}"
+    volumes:
+      - ./docker/dhis.conf:/opt/dhis2/dhis.conf:ro
+      - ./docker/log4j2.xml:/opt/dhis2/log4j2.xml:ro
+    environment:
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8081 \
+              -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml
+              -Dcom.sun.management.jmxremote \
+              -Dcom.sun.management.jmxremote.port=9010 \
+              -Dcom.sun.management.jmxremote.local.only=false \
+              -Dcom.sun.management.jmxremote.authenticate=false \
+              -Dcom.sun.management.jmxremote.ssl=false"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    scale: 2  # or more for a larger cluster
+
+  db:
+    image: ${DHIS2_POSTGRESQL_IMAGE:-ghcr.io/baosystems/postgis:13-3.3}
+    ports:
+      - 127.0.0.1:5432:5432
+    volumes:
+      - db-dump:/docker-entrypoint-initdb.d/
+      - db_data:/var/lib/postgresql/data/
+      - db-data-rr:/var/lib/postgresql/data-rr/
+      - ./docker/pg/master/scripts/02_create_replica_user.sql:/docker-entrypoint-initdb.d/02_create_replica_user.sql
+      - ./docker/pg/master/scripts/03_backup-master.sh:/docker-entrypoint-initdb.d/03_backup-master.sh
+      - ./docker/pg/master/scripts/04_move_config.sh:/docker-entrypoint-initdb.d/04_move_config.sh
+      - ./docker/pg/master/postgresql.conf:/var/lib/postgresql/postgresql.conf
+      - ./docker/pg/master/pg_hba.conf:/var/lib/postgresql/pg_hba.conf
+    environment:
+      POSTGRES_USER: dhis
+      POSTGRES_DB: dhis
+      POSTGRES_PASSWORD: &postgres_password dhis
+      PGPASSWORD: *postgres_password # needed by psql in healthcheck
+      POSTGRES_INITDB_WALDIR: /var/lib/postgresql/data-rr
+    healthcheck:
+      test: ["CMD-SHELL", "psql --no-password --quiet --username $$POSTGRES_USER postgres://127.0.0.1/$$POSTGRES_DB -p 5432 --command \"SELECT slot_name FROM pg_replication_slots WHERE slot_name = 'replication_slot_rr1';\" > /dev/null"]
+      start_period: 120s
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    restart: unless-stopped
+    depends_on:
+      get_demo_db:
+        condition: service_completed_successfully # make sure the DB dump has been downloaded
+
+  db-rr:
+    image: ${DHIS2_POSTGRESQL_IMAGE:-ghcr.io/baosystems/postgis:13-3.3}
+    ports:
+      - 127.0.0.1:5433:5432
+    volumes:
+      - db-rr-backup:/var/lib/postgresql/data-rr
+    environment:
+      POSTGRES_USER: dhis
+      POSTGRES_DB: dhis
+      POSTGRES_PASSWORD: *postgres_password
+      PGDATA: /var/lib/postgresql/data-rr/dhis2-rr
+    depends_on:
+      db:
+        condition: service_healthy
+      setup_rr:
+        condition: service_completed_successfully # make sure the DB dump has been downloaded
+    profiles:
+      - "replica"
+
+
+  get_demo_db:
+    image: busybox # busybox wget version does not have --no-clobber, so we need to do the [ -f ] test
+    command: sh -c '[ -f 01_dump.sql.gz ] && echo "01_dump.sql.gz exists" || wget --output-document 01_dump.sql.gz $$DHIS2_DB_DUMP_URL' # only download file if it does not exist
+
+    environment:
+      DHIS2_DB_DUMP_URL: "${DHIS2_DB_DUMP_URL:-https://databases.dhis2.org/sierra-leone/2.40.0/dhis2-db-sierra-leone.sql.gz}"
+    working_dir: /opt/dump
+    volumes:
+      - db-dump:/opt/dump
+
+
+  setup_rr:
+    image: docker:latest
+    volumes:
+      - ./docker/replica_transfer/copy_files.sh:/copy_files.sh
+      - db-rr-backup:/data-rr
+      - /var/run/docker.sock:/var/run/docker.sock  # Mount Docker socket
+      - ./docker/pg/master/postgresql.conf:/postgresql-rr.conf
+    command: sh -c "/copy_files.sh"
+    environment:
+      - PN=${PWD}
+    profiles:
+      - "replica"
+    depends_on:
+      - db
+
+  nginx:
+    image: ${DHIS2_NGINX_IMAGE:-jwilder/nginx-proxy:alpine}
+    restart: always
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    depends_on:
+      - db
+      - web
+      - redis
+    ports:
+      - "8080:80"
+
+volumes:
+  db-dump:
+  db_data:
+  db-data-rr:
+  db-rr-backup:
