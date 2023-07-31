@@ -27,8 +27,8 @@ end
 subgraph Database
   style db fill:#f6f8f9,stroke:#333,stroke-width:1px
   style db-rr fill:#f6f8f9,stroke:#333,stroke-width:1px
-  db(DHIS2 DB master)
-  db-rr(DHIS2 DB Replica)
+  db(DHIS2 DB master\ndb)
+  db-rr(DHIS2 DB Replica\ndb-rr)
 end
 
 subgraph Nginx
