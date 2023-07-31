@@ -20,8 +20,8 @@ end
 subgraph Web
   style web1 fill:#c8e8fb,stroke:#333,stroke-width:1px
   style web2 fill:#c8e8fb,stroke:#333,stroke-width:1px
-  web1(DHIS2\nweb)
-  web2(DHIS2\nweb-cluster_1,...)
+  web1(DHIS2\nweb_1)
+  web2(DHIS2\nweb_2,...)
 end
 
 subgraph Database
