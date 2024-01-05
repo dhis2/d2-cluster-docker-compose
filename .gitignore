@@ -1,5 +1,5 @@
 containers/core/src
 dhis-google-auth.json
-config/DHIS2_home/files
-config/DHIS2_home/logs
+*/config/DHIS2_home/files
+*/config/DHIS2_home/logs
 .apps

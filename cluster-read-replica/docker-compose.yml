@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  postgresql-master:
+    image: ${DHIS2_POSTGRESQL_IMAGE:-docker.io/bitnami/postgresql:11-debian-10}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgresql_master_data:/bitnami/postgresql
+      - db-dump:/docker-entrypoint-initdb.d/
+    environment:
+      POSTGRESQL_PGAUDIT_LOG: READ,WRITE
+      POSTGRESQL_LOG_HOSTNAME: true
+      POSTGRESQL_REPLICATION_MODE: master
+      POSTGRESQL_REPLICATION_USER: repl_user
+      POSTGRESQL_REPLICATION_PASSWORD: repl_password
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_DATABASE: dhis2
+      POSTGRESQL_PASSWORD: &postgres_password my_password
+      PGPASSWORD: *postgres_password # needed by psql in healthcheck
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRESQL_USERNAME -d $$POSTGRESQL_DATABASE"]
+      start_period: 60s
+      interval: 20s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    depends_on:
+      db-dump:
+        condition: service_completed_successfully # make sure the DB dump has been downloaded
+  
+  postgresql-slave:
+    image: ${DHIS2_POSTGRESQL_IMAGE:-docker.io/bitnami/postgresql:11-debian-10}
+    ports:
+      - '5433:5432'
+    depends_on:
+      postgresql-master: 
+        condition: service_healthy
+    environment:
+      POSTGRESQL_PGAUDIT_LOG: READ,WRITE
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_DATABASE: dhis2
+      POSTGRESQL_PASSWORD: &postgres_password my_password
+      POSTGRESQL_MASTER_HOST: postgresql-master
+      POSTGRESQL_LOG_HOSTNAME: true
+      POSTGRESQL_REPLICATION_MODE: slave
+      POSTGRESQL_REPLICATION_USER: repl_user
+      POSTGRESQL_REPLICATION_PASSWORD: repl_password
+      PGPASSWORD: *postgres_password # needed by psql in healthcheck
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $$POSTGRESQL_USERNAME -d $$POSTGRESQL_DATABASE"]
+    restart: unless-stopped
+
+  core:
+    image: "${DHIS2_IMAGE:-dhis2/core-dev:latest}"
+    restart: always
+    volumes:
+      - ./config/DHIS2_home/dhis.conf:/opt/dhis2/dhis.conf:ro
+      - ./config/log4j2.xml:/opt/dhis2/log4j2.xml:ro
+      - ./config/server.xml:/usr/local/tomcat/conf/server.xml
+    environment:
+      JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8081 \
+              -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml
+              -Dcom.sun.management.jmxremote \
+              -Dcom.sun.management.jmxremote.port=9010 \
+              -Dcom.sun.management.jmxremote.local.only=false \
+              -Dcom.sun.management.jmxremote.authenticate=false \
+              -Dcom.sun.management.jmxremote.ssl=false"
+    depends_on:
+      postgresql-master: 
+        condition: service_healthy
+      postgresql-slave: 
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  redis:
+    image: ${DHIS2_REDIS_IMAGE:-redis:7.0.12-alpine}
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./config/redis:/usr/local/etc/redis
+    ports:
+       - "6379"
+
+  gateway:
+    image: ${DHIS2_NGINX_IMAGE:-jwilder/nginx-proxy:alpine}
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    depends_on:
+      core:
+        condition: service_started
+
+  
+  db-dump:
+    image: busybox # busybox wget version does not have --no-clobber, so we need to do the [ -f ] test
+    command: sh -c '[ -f dump.sql.gz ] && echo "dump.sql.gz exists" || wget --output-document dump.sql.gz $$DHIS2_DB_DUMP_URL' # only download file if it does not exist
+    environment:
+      DHIS2_DB_DUMP_URL: "${DHIS2_DB_DUMP_URL:-https://databases.dhis2.org/sierra-leone/dev/dhis2-db-sierra-leone.sql.gz}"
+    working_dir: /opt/dump
+    volumes:
+      - db-dump:/opt/dump
+
+volumes:
+  db-dump:
+  postgresql_master_data:
+    driver: local
