@@ -2,9 +2,9 @@
 
 Supports both clustered core (with redis) and PostgreSQL read replicas.
 
-> Note
-> The bitnami postgres image is required for the read replica configuration
-> **In addition:
+> Note  
+> The bitnami postgres image is required for the read replica configuration  
+> **In addition:  
 > the postgres version is currently limited to 11 which contains the postgis extension**
 
 ## Examples
@@ -21,7 +21,7 @@ docker compose up -d && docker compose logs -f
 docker compose up -d
 ```
 
-> Caution
+> Caution  
 > Remember that running the latest dev can be unstable and prone to Flyway issues etc, which may prevent it from starting
 
 To scale the core, add that option to the command, e.g.:
