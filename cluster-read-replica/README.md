@@ -1,4 +1,4 @@
-#Clustered DHIS2 with Read Replication
+# Clustered DHIS2 with Read Replication
 
 Supports both clustered core (with redis) and PostgreSQL read replicas.
 
