@@ -46,3 +46,56 @@ I like to clean up volumes after using the instance, and before running another:
 docker compose down; docker volume prune -fa
 ```
 
+
+## Scaling overview
+
+```mermaid
+%%{
+  init: {
+    'theme': 'neutral',
+    'themeVariables': {
+      'primaryColor': '#BB2528',
+      'primaryTextColor': '#fff',
+      'primaryBorderColor': '#7C0000',
+      'lineColor': '#43CBCB',
+      'secondaryColor': '#006100',
+      'tertiaryColor': '#fff'
+    }
+  }
+}%%
+
+graph TD
+    subgraph LoadBalancer
+        NGINX[NGINX / Load Balancer]
+    end
+
+    subgraph Caching
+        REDIS[Redis]
+    end
+    
+    subgraph Application
+        DHIS2A(DHIS2 Core Server 1)
+        DHIS2B(DHIS2 Core Server 2)
+    end
+
+    subgraph Database
+        POSTGRESA[(PostgreSQL Primary)]
+        POSTGRESB[(PostgreSQL Read-Replica)]
+    end
+
+    NGINX ==> DHIS2A
+    NGINX --> DHIS2B
+
+    DHIS2A --> REDIS
+    DHIS2B --> REDIS
+    
+    DHIS2A ==> POSTGRESA
+    DHIS2B --> POSTGRESA
+
+    POSTGRESA -->|WAL| POSTGRESB
+    
+    DHIS2A -.->|Read| POSTGRESB
+    DHIS2B -.->|Read| POSTGRESB
+
+```
+
