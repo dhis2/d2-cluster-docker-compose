@@ -1,0 +1,42 @@
+version: '3'
+services:
+  core:
+    image: "dhis2/core-dev:local-tons-final"
+    restart: always
+    volumes:
+      - ./config/DHIS2_home/dhis.conf:/DHIS2_home/dhis.conf
+      - ./config/server.xml:/usr/local/tomcat/conf/server.xml
+      - ./config/DHIS2_home:/DHIS2_home
+    environment:
+      DHIS2_HOME: /DHIS2_home
+      # CATALINA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}'"
+    depends_on:
+      - "db"
+      - "redis"
+    scale: 3
+  db:
+    image: "ghcr.io/baosystems/postgis:12-3.3"
+    restart: always
+    volumes:
+      - datadb:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: dhis2
+      POSTGRES_USER: dhis
+      POSTGRES_PASSWORD: dhis
+
+  redis:
+    image: redis
+    restart: always  
+  
+  gateway:
+    image: "jwilder/nginx-proxy:alpine"
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.apps:/data/apps:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+volumes:
+  datadb:
+  home:

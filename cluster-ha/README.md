@@ -1,0 +1,3 @@
+# Clustered DHIS2 server
+
+This Docker Compose configuration which presents a proof-of-concept high-availability configuration using 3x DHIS2 tomcat containers and a redis instance for sharing state.  See [the DHIS2 cluster docs](https://docs.dhis2.org/en/manage/performing-system-administration/dhis-core-version-239/installation.html?h=cluster+2.39#install_cluster_configuration_introduction) for more info.
