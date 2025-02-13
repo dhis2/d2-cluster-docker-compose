@@ -1,5 +1,7 @@
 # DHIS2 Dockerized Server
 
+> :warning: **WARNING**  The docker-compose setup in this `cluster` directory is used by the `d2 cluster` CLI and so any changes **must be carefully reviewed** to ensure they don't break the CLI workflow!
+
 ## Pre-requisites
 
 * [Docker Desktop](https://www.docker.com/products/docker-desktop) (Mac or Windows) or [Docker Engine](https://docs.docker.com/install/#supported-platforms) on Linux
