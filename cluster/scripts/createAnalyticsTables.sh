@@ -1,0 +1,3 @@
+#!/bin/bash
+
+curl 'http://localhost:8080/api/29/resourceTables/analytics' -H 'Content-Type: multipart/form-data; boundary=----WebKitFormBoundary5c8fJqyQtWx50Esd' --data-binary $'------WebKitFormBoundary5c8fJqyQtWx50Esd\r\nContent-Disposition: form-data; name="skipAggregate"\r\n\r\nfalse\r\n------WebKitFormBoundary5c8fJqyQtWx50Esd\r\nContent-Disposition: form-data; name="skipResourceTables"\r\n\r\nfalse\r\n------WebKitFormBoundary5c8fJqyQtWx50Esd\r\nContent-Disposition: form-data; name="skipEvents"\r\n\r\nfalse\r\n------WebKitFormBoundary5c8fJqyQtWx50Esd\r\nContent-Disposition: form-data; name="skipEnrollment"\r\n\r\nfalse\r\n------WebKitFormBoundary5c8fJqyQtWx50Esd--\r\n'

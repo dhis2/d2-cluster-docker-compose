@@ -1,0 +1,4 @@
+# The configuration in this directory is closely tied to the functionality of the d2 cluster CLI
+# As such, any changes should be carefully reviewed before committing them!
+
+* @dhis2/team-extensibility
