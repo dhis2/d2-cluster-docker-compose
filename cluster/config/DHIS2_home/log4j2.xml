@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" monitorInterval="10">
     <!-- Stream logs:
-            docker compose logs -f web
+            docker compose logs -f core
          Stream logs of a particuar package only:
-            docker compose logs -f web | grep org.hisp.dhis.monitoring.metrics
+            docker compose logs -f core | grep org.hisp.dhis.monitoring.metrics
          Show timestamps:
-            docker compose logs -t -f web
+            docker compose logs -t -f core
     -->
     <Properties>
         <Property name="layout">%-5level %c [%t] %msg%n</Property>
@@ -21,11 +21,10 @@
         <!--
             This config logs events
 
-            for Loggers declared in packages prefixed with "org.hisp.dhis" i.e. "org.hisp.dhis.security"
+            for Loggers in packages starting from "org.hips.dhis" below i.e. "org.hisp.security"
             from level INFO to more severe (WARN, ERROR, ...)
 
-            any Logger declared in a package not prefixed with "org.hisp.dhis" and
-            without a Logger config defined here will log from level WARN to more severe.
+            any Logger without a config here will log from level WARN to more severe.
 
             Adapt this config as you see fit.
 
